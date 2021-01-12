@@ -1,4 +1,5 @@
 const express = require('express');
+const { NULL } = require('mysql/lib/protocol/constants/types');
 const router = express.Router();
 
 const mysqlConnection = require('../database.js');
@@ -22,9 +23,11 @@ router.get('/offices/:id', (req, res) => {
             mysqlConnection.query('SELECT * FROM office_services WHERE office_id = ?', [id], (error, officeServices, fields) => {
                 if (!error) {
                     const office = rows[0];
-                    const anotherOffice = [];
-                    office.officeServices = officeServices;
-                    anotherOffice.push(office);
+                    if (officeServices != null) {
+                        const anotherOffice = [];
+                        office.officeServices = officeServices;
+                        anotherOffice.push(office);
+                    }
                     res.json(office);
                 }
             });
